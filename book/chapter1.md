@@ -83,18 +83,31 @@
 以一个查天气的场景为例，四步流程在 API 层面的简化表示如下：
 
 ```text
-第一步：声明工具                    第二步：模型决定调用
-tools: [{                          assistant: {
-  name: "get_weather",               tool_calls: [{
-  parameters: {                        function: "get_weather",
-    city: "string"                     arguments: {city: "北京"}
-  }                                  }]
-}]                                 }
+第一步：声明工具
+tools: [{
+  name: "get_weather",
+  parameters: {
+    city: "string"
+  }
+}]
 
-第三步：结果追加到上下文              第四步：模型基于结果回复
-tool: {                            assistant: {
-  tool_call_id: "call_1",            content: "北京今天 28°C，晴。"
-  content: '{"temp":28,"sky":"晴"}'  }
+第二步：模型决定调用
+assistant: {
+  tool_calls: [{
+    function: "get_weather",
+    arguments: { city: "北京" }
+  }]
+}
+
+第三步：结果追加到上下文
+tool: {
+  tool_call_id: "call_1",
+  content: '{"temp":28,"sky":"晴"}'
+}
+
+第四步：模型基于结果回复
+assistant: {
+  content: "北京今天 28°C，晴。"
 }
 ```
 
